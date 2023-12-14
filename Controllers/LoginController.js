@@ -24,7 +24,6 @@ exports.login = catchAsync(async (req,res,next)=>{
 if(!user || !(await user.correctPassword(password, user.password))){
     return next(new AppError(`Incorrect email or password`, 401));
 }
-console.log(user.id, "user.id" ,"role", user.role)
 
 const token = JWT.sign({ id:user.id , role:user.role },process.env.JWT_SECRET,{expiresIn:process.env.JWT_EXPIRE_IN});
 
@@ -47,8 +46,7 @@ exports.forgetpassword = catchAsync(async (req,res,next)=>{
 
     const resetLink = `${req.protocol}://localhost:8080/resetpassword/${resetToken}`;   
     
-    console.log(resetLink)
-    const message = `<p>Hi ${user.firstName},</p>
+    const message = `<p>Hi ${user.Name},</p>
       <p>Forgot your password? No worries, we’ve got you covered.</p>
       <p>Click on the button below to reset your password:</p>
       <a href="${resetLink}" style="display:inline-block;padding:10px 20px;background-color:#007bff;color:#fff;border-radius:5px;text-decoration:none;">Reset Password</a>
@@ -102,7 +100,7 @@ user.passwordResetExpires = undefined
 await user.save();
 
 }else{
-    return next(new AppError("Password not matched!"),404);
+    return next(new AppError("Password not matched!"),400);
 }
 
 res.status(200).json({
