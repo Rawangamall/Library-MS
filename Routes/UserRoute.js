@@ -4,6 +4,7 @@ const multer = require('multer');
 const upload = multer();
 
 const userController=require("./../Controllers/UserController");
+const BorrowingController=require("./../Controllers/BorrowingController");
 const validationData = require("./../Core/Validations/User")
 const validationMW = require("./../Middlewares/validateMW")
 const auth = require("./../Middlewares/authenticationMW").auth
@@ -19,5 +20,8 @@ router.route("/user/:id")
       .get(auth,authorize(["borrower","employee"]),userController.getUser)  
       .patch(upload.none(),auth,authorize(["borrower","employee"]),validationData.UserValidPATCH,validationMW,userController.editUser)
       .delete(auth,authorize(["borrower","employee"]),userController.delUser) 
+
+router.route("/borrow/:id")
+      .post(upload.none(),BorrowingController.addOperation) 
 
 module.exports=router;
