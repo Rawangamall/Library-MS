@@ -29,14 +29,14 @@ exports.addUser = CatchAsync(async (request, response, next) => {
   
       const whereClause = searchKey ? {
         [Op.or]: [
-          { firstName: { [Op.like]: `%${searchKey}%` } },
-          { lastName: { [Op.like]: `%${searchKey}%` } },
+          { Name: { [Op.like]: `%${searchKey}%` } },
+          { createdAt: { [Op.like]: `%${searchKey}%` } },
           { email: { [Op.like]: `%${searchKey}%` } },
         ],
       } : {};
   
       
-      const attributes = ['id', 'firstName' , 'lastName', 'role', 'email','phoneNumber', 'image', 'updatedAt', 'createdAt'];
+      const attributes = ['id', 'Name', 'role', 'email', 'createdAt'];
   
       const { docs, pages, total } = await User.paginate({
         attributes,
