@@ -32,5 +32,3 @@ To run the application, use the following command:
 
 ```bash
 npm start
-
-rt
