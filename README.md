@@ -11,10 +11,26 @@ It contains the necessary SQL script to set up the database for this system.
 
 The schema diagram illustrating the database structure is available in the `Material` folder.
 
-
- ## For Testing:
+ ## For Documenation instractions:
 - **Postman Documentation link:** [API Documentation](https://documenter.getpostman.com/view/26421829/2s9Ykn8gn4)
 
  ## Test Cases
 For comprehensive testing of the application on login module, [test case.xlsx](./Material/test%20case.xlsx).
 
+
+## Bonus Achievements (Implemented)
+
+- **Analytical Reports:** Generates borrowing process reports within a specific period and exports data in CSV or Xlsx formats.
+- **Export Overdue Borrows:** Exports all overdue borrows from the previous month.
+- **Export Borrowing Processes:** Provides the ability to export borrowing processes from the last month.
+- **Rate limiting for the API to prevent abuse:** Implemented on two apis 1-User Profile 2-List All users (by allowing only 5 request and after 1 min it'll be reset).
+- **Implement basic authentication:** Authentaction implemented using token JWT.
+- **Test Case:** Login Module
+
+
+To run the application, use the following command:
+
+```bash
+npm start
+
+rt
