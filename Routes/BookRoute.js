@@ -31,5 +31,13 @@ router.route("/overdue")
 router.route("/dueDate")
       .get(BorrowingController.listdueDateBooks)
 
+router.route("/exportBorrowedBooks")
+      .get(BorrowingController.exportBorrowingOperations)
+
+router.route("/exportBorrowed/LastMonth")
+      .get(BorrowingController.exportLastMonthBorrowing)
+
+router.route("/exportoverDue/LastMonth")
+      .get(BorrowingController.exportLastMonthBorrowing)
 
  module.exports=router;

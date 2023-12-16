@@ -37,7 +37,7 @@ const Borrowing = sequelize.define('borrowing operations', {
     },
   },
   {
-     timestamps: false, 
+     timestamps: true, 
      uniqueKeys: {
       unique_borrowing: {
         fields: ['bookId', 'borrowerId'], // Define a unique key on bookId and borrowerId

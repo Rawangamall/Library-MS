@@ -1,6 +1,8 @@
 const JWT= require("jsonwebtoken");
 const { promisify } = require("util")
 const { Op } = require('sequelize');
+const { createObjectCsvWriter } = require('csv-writer');
+const fs = require('fs');
 
 const Operation = require("./../Models/BorrowingModel");
 const User = require("./../Models/UserModel");
@@ -175,3 +177,113 @@ exports.listBorrowBooks = CatchAsync(async (request, response, next) => {
   return response.status(200).json( dueOperations );
 
 });
+
+const getUniqueFileName = (fileName) => {
+  let count = 0;
+  let newFileName = fileName;
+  
+  while (fs.existsSync(newFileName)) {
+    count++;
+    const fileNameParts = fileName.split('.');
+    const extension = fileNameParts.pop();
+    newFileName = `${fileNameParts.join('.')}(${count}).${extension}`;
+  }
+  
+  return newFileName;
+};
+
+exports.exportBorrowingOperations = async (request, response, next) => {
+
+  const startDate = request.query.startDate
+  const endDate = request.query.endDate
+
+  if(!startDate || !endDate){
+    return response.status(400).json({message:"Enter the start and the end of period!"})
+  }
+
+    const borrowingOps = await Operation.findAll({
+      where: {
+        createdAt: {
+          [Op.between]: [startDate, endDate],
+        },
+      },
+      include: [Book, User],
+    });
+
+if(borrowingOps.length == 0){
+  return response.status(200).json({message:"There's no borrowed books in this period!"})
+}
+
+    const csvWriter = createObjectCsvWriter({
+      path: getUniqueFileName("exportBorrowingOperations.csv"),
+      header: [
+        { id: 'book.isbn', title: 'Book ISBN' },
+        { id: 'book.title', title: 'Book Title' },
+        { id: 'book.author', title: 'Book Author' },
+        { id: 'user.Name', title: 'User Name' },
+        { id: 'user.email', title: 'User Email' },
+
+      ],
+    });
+
+    const records = borrowingOps.map((process) => ({
+      'book.isbn': process.book.ISBN,
+      'book.title': process.book.title,
+      'book.author': process.book.author,
+      'user.Name': process.user.Name,
+      'user.email': process.user.email,
+
+    }));
+
+    await csvWriter.writeRecords(records);
+
+    return response.status(200).json({ message: 'Borrowing processes exported successfully' });
+  
+};
+
+exports.exportLastMonthBorrowing = async (request, response, next) => {
+
+    const currentDate = new Date(); 
+    const lastMonthStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1); // Start of last month
+    const lastMonthEndDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // End of last month
+
+    const borrowingOps = await Operation.findAll({
+      where: {
+        createdAt: {
+          [Op.between]: [lastMonthStartDate, lastMonthEndDate], 
+        },
+      },
+      include: [Book, User],
+    });
+
+    
+if(borrowingOps.length == 0){
+  return response.status(200).json({message:"There's no borrowed books in this period!"})
+}
+
+    const csvWriter = createObjectCsvWriter({
+      path: getUniqueFileName("BorrowingLastMonth.csv"),
+      header: [
+        { id: 'book.isbn', title: 'Book ISBN' },
+        { id: 'book.title', title: 'Book Title' },
+        { id: 'book.author', title: 'Book Author' },
+        { id: 'user.Name', title: 'User Name' },
+        { id: 'user.email', title: 'User Email' },
+
+      ],
+    });
+
+    const records = borrowingOps.map((process) => ({
+      'book.isbn': process.book.ISBN,
+      'book.title': process.book.title,
+      'book.author': process.book.author,
+      'user.Name': process.user.Name,
+      'user.email': process.user.email,
+
+    }));
+
+    await csvWriter.writeRecords(records);
+
+    return response.status(200).json({ message: 'Borrowing of last month exported' });
+};
+

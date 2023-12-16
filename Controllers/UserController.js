@@ -68,7 +68,8 @@ exports.getUser = CatchAsync(async (request, response, next) => {
   response.status(200).json(user);     
   });
 
-  exports.editUser = CatchAsync(async (request, response, next) => {
+
+exports.editUser = CatchAsync(async (request, response, next) => {
    
     const id = request.params.id;
 
@@ -96,13 +97,27 @@ exports.getUser = CatchAsync(async (request, response, next) => {
 exports.delUser = CatchAsync(async (request, response, next) => {
   const id = request.params.id;
 
+
   const user = await User.findByPk(id);
 
   if (!user) {
     return next(new AppError(`User not found`, 401));
   }
 
+  
+const userOperations = await Operation.findAll({
+  where: {
+    borrowerId: user.id,
+    returned: false,
+  }
+});
+
+if(userOperations.length == 0){
+  return next(new AppError(`Account can't be deleted before returning the borrowed books`, 400));
+}else{
   await user.destroy();
+}
 
   response.status(200).json({ message: 'User deleted successfully' });  
 }); 
+
