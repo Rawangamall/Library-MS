@@ -11,7 +11,7 @@ It contains the necessary SQL script to set up the database for this system.
 
 The schema diagram illustrating the database structure is available in the `Material` folder.
 
- ## For Documenation instractions:
+ ## For Documenation instructions:
 - **Postman Documentation link:** [API Documentation](https://documenter.getpostman.com/view/26421829/2s9Ykn8gn4)
 
  ## Test Cases
