@@ -38,6 +38,6 @@ router.route("/exportBorrowed/LastMonth")
       .get(BorrowingController.exportLastMonthBorrowing)
 
 router.route("/exportoverDue/LastMonth")
-      .get(BorrowingController.exportLastMonthBorrowing)
+      .get(BorrowingController.exportLastMonthoverDue)
 
  module.exports=router;

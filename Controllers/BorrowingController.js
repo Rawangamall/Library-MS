@@ -287,3 +287,53 @@ if(borrowingOps.length == 0){
     return response.status(200).json({ message: 'Borrowing of last month exported' });
 };
 
+
+
+exports.exportLastMonthoverDue = async (request, response, next) => {
+
+  const currentDate = new Date(); 
+  const lastMonthStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1); // Start of last month
+  const lastMonthEndDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // End of last month
+
+  const borrowingOps = await Operation.findAll({
+    where: {
+      createdAt: {
+        [Op.between]: [lastMonthStartDate, lastMonthEndDate], 
+      },
+      dueDate: { [Op.lt]: currentDate }, 
+      returned: false, 
+    },
+    include: [Book, User],
+  });
+
+  
+if(borrowingOps.length == 0){
+return response.status(200).json({message:"There's no borrowed books in this period!"})
+}
+
+  const csvWriter = createObjectCsvWriter({
+    path: getUniqueFileName("overDueLastMonth.csv"),
+    header: [
+      { id: 'book.isbn', title: 'Book ISBN' },
+      { id: 'book.title', title: 'Book Title' },
+      { id: 'book.author', title: 'Book Author' },
+      { id: 'user.Name', title: 'User Name' },
+      { id: 'user.email', title: 'User Email' },
+
+    ],
+  });
+
+  const records = borrowingOps.map((process) => ({
+    'book.isbn': process.book.ISBN,
+    'book.title': process.book.title,
+    'book.author': process.book.author,
+    'user.Name': process.user.Name,
+    'user.email': process.user.email,
+
+  }));
+
+  await csvWriter.writeRecords(records);
+
+  return response.status(200).json({ message: 'Borrowing of last month exported' });
+};
+
