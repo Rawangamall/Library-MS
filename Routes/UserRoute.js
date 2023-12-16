@@ -18,10 +18,13 @@ router.route("/users")
 
 router.route("/user/:id")
       .get(auth,authorize(["borrower","employee"]),userController.getUser)  
-      .patch(upload.none(),auth,authorize(["borrower","employee"]),validationData.UserValidPATCH,validationMW,userController.editUser)
+      .patch(upload.none(),auth,authorize(["borrower"]),validationData.UserValidPATCH,validationMW,userController.editUser)
       .delete(auth,authorize(["borrower","employee"]),userController.delUser) 
 
 router.route("/borrow/:id")
-      .post(upload.none(),BorrowingController.addOperation) 
+      .post(upload.none(),auth,authorize(["borrower"]),BorrowingController.addOperation) 
+      .patch(upload.none(),auth,authorize(["borrower","employee"]),BorrowingController.returnBook)
+      .get(auth,authorize(["borrower","employee"]),BorrowingController.ListUserOperations)
 
-module.exports=router;
+
+      module.exports=router;

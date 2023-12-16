@@ -38,14 +38,19 @@ const Borrowing = sequelize.define('borrowing operations', {
   },
   {
      timestamps: false, 
+     uniqueKeys: {
+      unique_borrowing: {
+        fields: ['bookId', 'borrowerId'], // Define a unique key on bookId and borrowerId
+      },
+    }
   });
   
   // Associations
-  Book.hasMany(Borrowing);
-  Borrowing.belongsTo(Book);
+  Book.hasMany(Borrowing, { foreignKey: 'bookId' });
+  Borrowing.belongsTo(Book, { foreignKey: 'bookId' });
   
-  User.hasMany(Borrowing);
-  Borrowing.belongsTo(User);
+  User.hasMany(Borrowing, { foreignKey: 'borrowerId' });
+  Borrowing.belongsTo(User, { foreignKey: 'borrowerId' });
   
 SequelizePaginate.paginate(Borrowing);
 module.exports = Borrowing;

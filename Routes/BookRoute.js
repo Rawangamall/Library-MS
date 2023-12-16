@@ -4,6 +4,7 @@ const multer = require('multer');
 const upload = multer();
 
 const BookController=require("./../Controllers/BookController");
+const BorrowingController=require("./../Controllers/BorrowingController");
 const validationData = require("./../Core/Validations/Book")
 const validationMW = require("./../Middlewares/validateMW")
 const auth = require("./../Middlewares/authenticationMW").auth
@@ -20,5 +21,15 @@ router.route("/book/:id")
  
 router.route("/search")
       .get(BookController.searchBooks)
-  
+
+router.route("/borrowedBooks")
+      .get(BorrowingController.listBorrowBooks)
+
+router.route("/overdue")
+      .get(BorrowingController.listOverdueBooks)
+
+router.route("/dueDate")
+      .get(BorrowingController.listdueDateBooks)
+
+
  module.exports=router;
