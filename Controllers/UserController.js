@@ -1,4 +1,5 @@
 const User = require("./../Models/UserModel");
+const Operation = require("./../Models/BorrowingModel")
 
 const { Op } = require('sequelize');
 const bcrypt = require("bcrypt");
@@ -112,7 +113,7 @@ const userOperations = await Operation.findAll({
   }
 });
 
-if(userOperations.length == 0){
+if(userOperations.length != 0){
   return next(new AppError(`Account can't be deleted before returning the borrowed books`, 400));
 }else{
   await user.destroy();

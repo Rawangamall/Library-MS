@@ -25,6 +25,7 @@ const Book = sequelize.define('books', {
       shelfLocation: {
         type: DataTypes.STRING,  //Hierarchical Codes as Floor-Section-Shelf : 2-3A-105
         allowNull: false,
+        unique: true,
       }
     },
    {

@@ -15,7 +15,7 @@ router.route("/register")
       .post(upload.none(),validationData.UserValidPOST,validationMW,userController.addUser) 
 
 router.route("/users")
-      .get(auth,authorize(["borrower","employee"]),limitMW.rateLimit,userController.getAllUsers)  
+      .get(auth,authorize(["borrower","employee"]),limitMW.rateLimit,userController.getAllUsers)   //should be authorized for employee only but for the test
 
 router.route("/user/:id")
       .get(auth,authorize(["borrower","employee"]),limitMW.rateLimit,userController.getUser)  
